@@ -309,14 +309,35 @@ Alpine.data('qrisApp', () => ({
     qrContainer.innerHTML = "";
     if (typeof window.QRCode !== 'undefined') {
       try {
-        new window.QRCode(qrContainer, {
-          text: this.generatedPayload,
-          width: 180,
-          height: 180,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: window.QRCode.CorrectLevel.M
-        });
+        // Option 1: node-qrcode library (window.QRCode.toCanvas)
+        if (typeof window.QRCode.toCanvas === 'function') {
+          const canvas = document.createElement('canvas');
+          qrContainer.appendChild(canvas);
+          window.QRCode.toCanvas(canvas, this.generatedPayload, {
+            width: 180,
+            margin: 2,
+            color: { dark: "#000000", light: "#ffffff" }
+          }, (err) => {
+            if (err) console.error("Error rendering QR canvas:", err);
+          });
+          return;
+        }
+
+        // Option 2: davidshimjs qrcodejs library (new window.QRCode(...))
+        if (typeof window.QRCode === 'function') {
+          const correctLevel = (window.QRCode.CorrectLevel && window.QRCode.CorrectLevel.M !== undefined) 
+            ? window.QRCode.CorrectLevel.M 
+            : 0;
+          new window.QRCode(qrContainer, {
+            text: this.generatedPayload,
+            width: 180,
+            height: 180,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: correctLevel
+          });
+          return;
+        }
       } catch (e) {
         console.error("QRCode render exception:", e);
       }
@@ -324,14 +345,14 @@ Alpine.data('qrisApp', () => ({
   },
 
   downloadQR() {
-    const qrImg = document.querySelector("#qrcode img");
     const qrCanvas = document.querySelector("#qrcode canvas");
+    const qrImg = document.querySelector("#qrcode img");
 
     let dataUrl = '';
-    if (qrImg && qrImg.src) {
-      dataUrl = qrImg.src;
-    } else if (qrCanvas) {
+    if (qrCanvas) {
       dataUrl = qrCanvas.toDataURL("image/png");
+    } else if (qrImg && qrImg.src) {
+      dataUrl = qrImg.src;
     }
 
     if (dataUrl) {

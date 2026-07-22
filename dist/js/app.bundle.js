@@ -1981,27 +1981,43 @@ ${n2 ? 'Expression: "' + n2 + '"\n\n' : ""}`, t2), setTimeout((() => {
       qrContainer.innerHTML = "";
       if (typeof window.QRCode !== "undefined") {
         try {
-          new window.QRCode(qrContainer, {
-            text: this.generatedPayload,
-            width: 180,
-            height: 180,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: window.QRCode.CorrectLevel.M
-          });
+          if (typeof window.QRCode.toCanvas === "function") {
+            const canvas = document.createElement("canvas");
+            qrContainer.appendChild(canvas);
+            window.QRCode.toCanvas(canvas, this.generatedPayload, {
+              width: 180,
+              margin: 2,
+              color: { dark: "#000000", light: "#ffffff" }
+            }, (err) => {
+              if (err) console.error("Error rendering QR canvas:", err);
+            });
+            return;
+          }
+          if (typeof window.QRCode === "function") {
+            const correctLevel = window.QRCode.CorrectLevel && window.QRCode.CorrectLevel.M !== void 0 ? window.QRCode.CorrectLevel.M : 0;
+            new window.QRCode(qrContainer, {
+              text: this.generatedPayload,
+              width: 180,
+              height: 180,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+              correctLevel
+            });
+            return;
+          }
         } catch (e2) {
           console.error("QRCode render exception:", e2);
         }
       }
     },
     downloadQR() {
-      const qrImg = document.querySelector("#qrcode img");
       const qrCanvas = document.querySelector("#qrcode canvas");
+      const qrImg = document.querySelector("#qrcode img");
       let dataUrl = "";
-      if (qrImg && qrImg.src) {
-        dataUrl = qrImg.src;
-      } else if (qrCanvas) {
+      if (qrCanvas) {
         dataUrl = qrCanvas.toDataURL("image/png");
+      } else if (qrImg && qrImg.src) {
+        dataUrl = qrImg.src;
       }
       if (dataUrl) {
         const link = document.createElement("a");
