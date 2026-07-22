@@ -45,7 +45,7 @@ Alpine.data('loginApp', () => ({
             const currentPath = window.location.pathname.replace(/\/$/, '').replace(/\.html$/, '');
             if (!currentPath.endsWith('dashboard')) {
               const dest = window.location.protocol === 'file:' ? 'dashboard.html' : '/dashboard';
-              window.location.href = dest;
+              window.location.replace(dest);
               return;
             }
           } else {
@@ -176,7 +176,7 @@ Alpine.data('loginApp', () => ({
         }
         setTimeout(() => {
           const dest = window.location.protocol === 'file:' ? 'dashboard.html' : '/dashboard';
-          window.location.href = dest;
+          window.location.replace(dest);
         }, 300);
       }, 400);
     }, 400);

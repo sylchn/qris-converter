@@ -1688,7 +1688,7 @@ ${n2 ? 'Expression: "' + n2 + '"\n\n' : ""}`, t2), setTimeout((() => {
               const currentPath = window.location.pathname.replace(/\/$/, "").replace(/\.html$/, "");
               if (!currentPath.endsWith("dashboard")) {
                 const dest = window.location.protocol === "file:" ? "dashboard.html" : "/dashboard";
-                window.location.href = dest;
+                window.location.replace(dest);
                 return;
               }
             } else {
@@ -1811,7 +1811,7 @@ ${n2 ? 'Expression: "' + n2 + '"\n\n' : ""}`, t2), setTimeout((() => {
           }
           setTimeout(() => {
             const dest = window.location.protocol === "file:" ? "dashboard.html" : "/dashboard";
-            window.location.href = dest;
+            window.location.replace(dest);
           }, 300);
         }, 400);
       }, 400);
