@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { calculateCRC16, validateCRC16 } from '../lib/qris/crc.js';
+import { calculateCRC16, validateCRC16 } from '../src/lib/qris/crc.js';
 
 test('Kalkulasi CRC16 - Standard CRC-16/CCITT-FALSE', () => {
   // Nilai uji standar untuk CRC-16/CCITT-FALSE dengan input "123456789" adalah 0x29B1

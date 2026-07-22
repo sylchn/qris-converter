@@ -81,33 +81,42 @@ Format payload QRIS mengacu pada spesifikasi **EMVCo QR Code Specification for P
 
 ```text
 qris-converter/
-├── .htaccess             # Rules Rewrite Apache
-├── _redirects            # Rules Routing Cloudflare / Netlify
-├── index.html            # Halaman Landing & Fitur Utama
+├── index.html            # Halaman Utama / Landing Page
 ├── docs.html             # Halaman Dokumentasi Teknis
-├── login.html            # Halaman Masuk Merchant / Unggah QRIS
+├── login.html            # Halaman Masuk Merchant / Scanner QRIS
 ├── dashboard.html        # Halaman Dashboard Pengelola QRIS Dinamis
-├── app.js                # Logika Utama Dashboard Merchant (Alpine.js)
-├── login.js              # Logika Pembaca Gambar QRIS (Alpine.js)
-├── input.css             # Desain System Tokens & Tailwind v4 Custom CSS
-├── style.css             # Output CSS Terkompresi
-├── app.bundle.js         # Bundel JS Aplikasi Terkompresi
-├── login.bundle.js       # Bundel JS Login Terkompresi
-├── package.json          # Konfigurasi Dependensi & Npm Scripts
+├── package.json          # Konfigurasi Dependensi & Npm Build Scripts
+├── README.md             # Dokumentasi Resmi GitHub Open-Source
+├── .gitignore            # Konfigurasi Git Ignore
+├── .htaccess             # Rules Rewrite Server Apache
+├── _redirects            # Rules Routing Cloudflare Pages / Netlify
+├── vercel.json           # Konfigurasi Routing Platform Vercel
 ├── robots.txt            # Konfigurasi Bot Search Engine
 ├── sitemap.xml           # Sitemap Indeksasi SEO
-├── vercel.json           # Konfigurasi Routing Vercel
-├── lib/                  # Library Lokal Self-Contained (Offline Ready)
-│   ├── alpine.esm.js
-│   ├── font-awesome/
-│   ├── jsQR.min.js
-│   ├── qrcode.min.js
-│   └── qris/            # Engine Pengolah Payload QRIS (Pure JS)
-│       ├── amount.js     # Pembuat Payload QRIS Dinamis
-│       ├── crc.js        # Algoritma Checksum CRC-16 CCITT-FALSE
-│       └── parser.js     # Pengurai Struktur Data TLV
-└── tests/                # Pengujian Unit Otomatis
-    └── qris.test.js
+├── src/                  # Kode Sumber Aplikasi (Source Code)
+│   ├── scripts/          # Logika Utama Aplikasi (ES6+ Modules)
+│   │   ├── app.js        # Logika Dashboard Merchant (Alpine.js)
+│   │   └── login.js      # Logika Pembaca Gambar QRIS (Alpine.js)
+│   ├── styles/           # Styling & CSS Tokens
+│   │   └── input.css     # Desain System Tokens & Tailwind v4 Custom CSS
+│   └── lib/              # Library Lokal Self-Contained (Offline Ready)
+│       ├── alpine.esm.js
+│       ├── font-awesome/
+│       ├── jsQR.min.js
+│       ├── qrcode.min.js
+│       └── qris/         # Engine Pengolah Payload QRIS (Pure JS)
+│           ├── amount.js # Pembuat Payload QRIS Dinamis
+│           ├── crc.js    # Algoritma Checksum CRC-16 CCITT-FALSE
+│           └── parser.js # Pengurai Struktur Data TLV
+├── dist/                 # Hasil Kompilasi Production (Distribution Build)
+│   ├── css/
+│   │   └── style.css     # CSS Terkompresi Tailwind v4
+│   └── js/
+│       ├── app.bundle.js # Bundel JS Dashboard Terkompresi
+│       └── login.bundle.js # Bundel JS Login Terkompresi
+└── tests/                # Automated Unit Test Suite
+    ├── crc.test.js
+    └── parser.test.js
 ```
 
 ---

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { parseQRIS, parseTLVString } from '../lib/qris/parser.js';
-import { generateDynamicQRIS } from '../lib/qris/amount.js';
-import { calculateCRC16 } from '../lib/qris/crc.js';
+import { parseQRIS, parseTLVString } from '../src/lib/qris/parser.js';
+import { generateDynamicQRIS } from '../src/lib/qris/amount.js';
+import { calculateCRC16 } from '../src/lib/qris/crc.js';
 
 test('Pengurai TLV Dasar (parseTLVString)', () => {
   const tlv = '000201010211';

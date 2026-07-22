@@ -1,4 +1,4 @@
-import Alpine from './lib/alpine.esm.js';
+import Alpine from '../lib/alpine.esm.js';
 window.Alpine = Alpine;
 
 // Check Cloudflare Variables & Secrets (SITE_URL, Google, Bing, Yandex Search Console Verifications)
@@ -11,9 +11,9 @@ if (typeof process !== 'undefined' && process.env) {
   if (process.env.YANDEX_SITE_VERIFICATION) window.YANDEX_SITE_VERIFICATION = process.env.YANDEX_SITE_VERIFICATION;
 }
 
-import { generateDynamicQRIS } from './lib/qris/amount.js';
-import { parseQRIS, parseTLVString, TAG_NAMES } from './lib/qris/parser.js';
-import { calculateCRC16 } from './lib/qris/crc.js';
+import { generateDynamicQRIS } from '../lib/qris/amount.js';
+import { parseQRIS, parseTLVString, TAG_NAMES } from '../lib/qris/parser.js';
+import { calculateCRC16 } from '../lib/qris/crc.js';
 
 const sampleQRIS = "00020101021126680016ID10202118319690118936000020000025740214400000257400020303UMI51440014ID10202118319690215400000257400020303UMI5204000053033605802ID5921Toko Kelontong Berkah6009Tangerang61051513062070703A0163045E65";
 
