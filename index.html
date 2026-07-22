@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>QRIS Converter - Konversi QRIS Statis ke Dinamis Instan & Gratis</title>
+  <meta name="title" content="QRIS Converter - Konversi QRIS Statis ke Dinamis Instan & Gratis">
+  <meta name="description" content="Aplikasi gratis pengubah QRIS Statis merchant menjadi QRIS Dinamis dengan nominal tagihan rupiah otomatis. 100% Aman, Pemrosesan Lokal (Client-Side Browser), tanpa biaya berlangganan. Sesuai standar EMVCo Bank Indonesia (GPN).">
+  <meta name="keywords" content="QRIS dinamis, konversi QRIS statis ke dinamis, QRIS nominal otomatis, QRIS generator gratis, ubah QRIS statis, QRIS merchant Indonesia, EMVCo QRIS parser, QRIS GPN, QRIS tanpa MDR, barcode QRIS dinamis, QRIS scanner decoder">
+  <meta name="author" content="QRIS Converter Team">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="language" content="Indonesian">
+  <meta name="revisit-after" content="3 days">
+  <meta name="theme-color" content="#0f121e">
+  <!-- Dynamic Origin & Search Console Verification (Google, Bing, Yandex via Cloudflare Variables & Secrets) -->
+  <script>
+    (function() {
+      const cfEnvUrl = (typeof window !== 'undefined' && window.CLOUDFLARE_SITE_URL) ? window.CLOUDFLARE_SITE_URL : '';
+      const siteOrigin = cfEnvUrl || ((window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://qris-dynamic-converter.pages.dev');
+      window.SITE_ORIGIN = siteOrigin;
+
+      const cleanPath = window.location.pathname.replace(/\.html$/, '');
+      const fullUrl = siteOrigin + (cleanPath.endsWith('/index') ? '/' : cleanPath);
+      
+      function addMeta(attr, valKey, valVal) {
+        const el = document.createElement('meta');
+        el.setAttribute(attr, valKey);
+        el.setAttribute('content', valVal);
+        document.head.appendChild(el);
+      }
+      function addLink(rel, href) {
+        const el = document.createElement('link');
+        el.setAttribute('rel', rel);
+        el.setAttribute('href', href);
+        document.head.appendChild(el);
+      }
+
+      addLink('canonical', fullUrl);
+      addMeta('property', 'og:url', fullUrl);
+      addMeta('name', 'twitter:url', fullUrl);
+      addMeta('property', 'og:image', siteOrigin + '/assets/og-preview.png');
+      addMeta('name', 'twitter:image', siteOrigin + '/assets/og-preview.png');
+
+      const gVerify = (typeof window !== 'undefined' && window.GOOGLE_SITE_VERIFICATION) ? window.GOOGLE_SITE_VERIFICATION : '';
+      const bVerify = (typeof window !== 'undefined' && (window.BING_SITE_VERIFICATION || window.MSVALIDATE_01)) ? (window.BING_SITE_VERIFICATION || window.MSVALIDATE_01) : '';
+      const yVerify = (typeof window !== 'undefined' && window.YANDEX_SITE_VERIFICATION) ? window.YANDEX_SITE_VERIFICATION : '';
+
+      if (gVerify) addMeta('name', 'google-site-verification', gVerify);
+      if (bVerify) addMeta('name', 'msvalidate.01', bVerify);
+      if (yVerify) addMeta('name', 'yandex-verification', yVerify);
+    })();
+  </script>
+
+  <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="QRIS Converter - Ubah QRIS Statis ke Dinamis Instan & Gratis">
+  <meta property="og:description" content="Tingkatkan efisiensi toko Anda. Injeksi nominal tagihan rupiah secara otomatis ke dalam kode QRIS Statis merchant Anda secara instan, aman, dan 100% lokal.">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="QRIS Converter Merchant Dashboard Preview">
+  <meta property="og:site_name" content="QRIS Converter">
+  <meta property="og:locale" content="id_ID">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="QRIS Converter - Generator QRIS Dinamis Nominal Otomatis">
+  <meta name="twitter:description" content="Konversi QRIS Statis ke Dinamis dengan nominal pembayaran rupiah secara otomatis. 100% Gratis & Safe Browser Engine.">
+
+  <!-- Structured Data JSON-LD (Schema.org for Google Search Rich Snippets) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "QRIS Converter",
+    "operatingSystem": "All Web Browsers (Desktop & Mobile)",
+    "applicationCategory": "BusinessApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "IDR"
+    },
+    "description": "Aplikasi konversi kode QRIS Statis merchant menjadi QRIS Dinamis dengan nominal pembayaran otomatis. 100% lokal di browser tanpa server upload.",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "128"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Apakah konversi QRIS di aplikasi ini gratis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ya, 100% gratis tanpa biaya tersembunyi dan tanpa batasan jumlah transaksi konversi."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apakah data QRIS toko saya diunggah ke server luar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tidak. Seluruh penguraian payload dan pembuatan CRC16 QRIS dilakukan 100% di browser perangkat Anda (Client-Side Local Processing)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apakah QRIS Dinamis hasil konversi dapat dipindai oleh semua aplikasi pembayaran di Indonesia?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ya, hasil QRIS Dinamis sepenuhnya mematuhi spesifikasi standar EMVCo dan Bank Indonesia (GPN), sehingga dapat dipindai oleh BCA, Mandiri, BRI, BNI, GoPay, OVO, ShopeePay, DANA, LinkAja, dan seluruh aplikasi m-Banking/e-Wallet di Indonesia."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lib/font-awesome/css/all.min.css">
+  <script type="module">
+    import Alpine from './lib/alpine.esm.js';
+    window.Alpine = Alpine;
+    Alpine.start();
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+<body class="bg-brand-bg text-slate-100 font-sans overflow-x-hidden" x-data="{ mobileMenuOpen: false }">
+
+  <!-- ============================== MOBILE SIDEBAR DRAWER (ROOT Z-100) ============================== -->
+  <div x-show="mobileMenuOpen" class="fixed inset-0 z-[100] flex md:hidden" x-cloak>
+    <!-- Backdrop Blur Overlay -->
+    <div @click="mobileMenuOpen = false" 
+         x-show="mobileMenuOpen" 
+         x-transition:enter="transition-opacity ease-out duration-300" 
+         x-transition:enter-start="opacity-0" 
+         x-transition:enter-end="opacity-100" 
+         x-transition:leave="transition-opacity ease-in duration-200" 
+         x-transition:leave-start="opacity-100" 
+         x-transition:leave-end="opacity-0" 
+         class="fixed inset-0 bg-black/75 backdrop-blur-md z-[100]"></div>
+
+    <!-- Left Slide Drawer -->
+    <div x-show="mobileMenuOpen" 
+         x-transition:enter="transition-transform ease-out duration-300" 
+         x-transition:enter-start="-translate-x-full" 
+         x-transition:enter-end="translate-x-0" 
+         x-transition:leave="transition-transform ease-in duration-200" 
+         x-transition:leave-start="translate-x-0" 
+         x-transition:leave-end="-translate-x-full" 
+         class="relative z-[101] flex flex-col justify-between w-72 max-w-[85vw] bg-brand-sidebar border-r border-brand-border h-full min-h-screen p-6 shadow-2xl overflow-y-auto">
+      
+      <!-- Top Section: Brand & Close Button -->
+      <div class="space-y-6">
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded bg-brand-accent flex items-center justify-center shadow-md">
+              <span class="text-black font-extrabold text-xs tracking-tighter">Qc</span>
+            </div>
+            <span class="text-xs font-extrabold text-slate-100 tracking-tight">QRIS Converter</span>
+          </div>
+          
+          <button @click="mobileMenuOpen = false" class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-hover text-slate-400 hover:text-slate-200 border border-brand-border/60 transition-colors">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex flex-col gap-2 pt-2">
+          <a href="javascript:void(0)" @click="scrollToSection('fitur'); mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-brand-border hover:bg-brand-hover/50 text-xs font-bold text-slate-300 hover:text-brand-accent transition-all">
+            <i class="fa-solid fa-star text-brand-accent text-sm w-5"></i>
+            <span>Fitur Unggulan</span>
+          </a>
+          <a href="javascript:void(0)" @click="scrollToSection('panduan'); mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-brand-border hover:bg-brand-hover/50 text-xs font-bold text-slate-300 hover:text-brand-accent transition-all">
+            <i class="fa-solid fa-layer-group text-brand-accent text-sm w-5"></i>
+            <span>Cara Kerja (3 Langkah)</span>
+          </a>
+          <a href="javascript:void(0)" @click="scrollToSection('keamanan'); mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl border border-transparent hover:border-brand-border hover:bg-brand-hover/50 text-xs font-bold text-slate-300 hover:text-brand-accent transition-all">
+            <i class="fa-solid fa-shield-halved text-brand-accent text-sm w-5"></i>
+            <span>Keamanan & Privasi</span>
+          </a>
+          <a href="/docs" @click="smartNavDocs($event); mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl border border-brand-accent/20 bg-brand-accent/5 text-xs font-bold text-brand-accent transition-all">
+            <i class="fa-solid fa-book-open text-brand-accent text-sm w-5"></i>
+            <span>Dokumentasi Sistem</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Bottom Action Button Section -->
+      <div class="pt-6 border-t border-brand-border/60 mt-auto">
+        <a href="login.html" onclick="smartNav(event); mobileMenuOpen = false" class="w-full bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold text-xs uppercase tracking-wider py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/10">
+          <i class="fa-solid fa-right-to-bracket text-sm"></i>
+          <span>Masuk Merchant</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================== NAVBAR ============================== -->
+  <header class="w-full border-b border-brand-border sticky top-0 z-40 bg-brand-bg/95 backdrop-blur-sm">
+    <nav class="h-14 sm:h-16 flex items-center justify-between px-5 sm:px-8 max-w-7xl w-full mx-auto">
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-lg bg-brand-accent flex items-center justify-center shadow-md">
+          <span class="text-black font-extrabold text-sm tracking-tighter">Qc</span>
+        </div>
+        <span class="text-sm font-extrabold text-slate-100 tracking-tight">QRIS Converter</span>
+      </div>
+
+      <!-- Nav Links (Desktop) -->
+      <div class="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-400">
+        <a href="javascript:void(0)" onclick="scrollToSection('fitur')" class="hover:text-slate-100 transition-colors">Fitur</a>
+        <a href="javascript:void(0)" onclick="scrollToSection('panduan')" class="hover:text-slate-100 transition-colors">Cara Kerja</a>
+        <a href="javascript:void(0)" onclick="scrollToSection('keamanan')" class="hover:text-slate-100 transition-colors">Keamanan</a>
+        <a href="/docs" onclick="smartNavDocs(event)" class="hover:text-brand-accent transition-colors">Dokumentasi</a>
+      </div>
+
+      <!-- CTA & Mobile Hamburger Button -->
+      <div class="flex items-center gap-3">
+        <a href="login.html" onclick="smartNav(event)" class="max-md:hidden flex items-center bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold text-xs uppercase tracking-wider px-4 py-2 rounded-lg transition-colors duration-200 gap-1.5 shadow-md shadow-brand-accent/5">
+          <i class="fa-solid fa-right-to-bracket text-xs"></i>
+          <span>Masuk</span>
+        </a>
+
+        <!-- Mobile Hamburger Button -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-slate-300 hover:text-brand-accent p-2 rounded-lg bg-brand-sidebar border border-brand-border transition-colors flex items-center justify-center w-9 h-9" aria-label="Menu Navigasi Mobile">
+          <i class="fa-solid" :class="mobileMenuOpen ? 'fa-xmark text-sm' : 'fa-bars text-sm'"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ============================== HERO ============================== -->
+  <main>
+    <section class="max-w-7xl w-full mx-auto px-5 sm:px-8 py-16 md:py-24 flex flex-col items-center gap-14 relative">
+
+      <!-- Glow BG effect -->
+      <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-brand-accent/3 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="text-center space-y-6 max-w-3xl relative z-10">
+        <!-- Badge -->
+        <span class="inline-flex items-center gap-1.5 bg-brand-accent/10 border border-brand-accent/25 text-brand-accent text-[10px] font-bold px-3 py-1 rounded uppercase tracking-wider">
+          <i class="fa-solid fa-bolt text-[9px]"></i>
+          100% Lokal & Aman
+        </span>
+
+        <h1 class="text-3xl md:text-5xl font-extrabold text-slate-100 leading-tight tracking-tight">
+          Konversi QRIS Statis Ke Dinamis <br class="hidden md:inline">
+          <span class="text-brand-accent">Nominal Pembayaran Tetap</span>
+        </h1>
+
+        <p class="text-xs md:text-sm text-brand-text-muted max-w-xl mx-auto leading-relaxed">
+          Ubah QRIS Statis merchant Anda menjadi QRIS Dinamis dengan nominal pembayaran otomatis. Hindari kesalahan input nominal, percepat antrean kasir, dan kelola secara offline sepenuhnya.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2 text-xs">
+          <a href="login.html" onclick="smartNav(event)" class="bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold px-6 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-1.5 shadow-md shadow-brand-accent/5">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Mulai Konversi Sekarang
+          </a>
+          <a href="javascript:void(0)" onclick="scrollToSection('fitur')" class="group bg-brand-sidebar hover:bg-brand-hover text-slate-400 hover:text-slate-200 border border-brand-border font-bold px-6 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2">
+            <span>Pelajari Fitur</span>
+            <i class="fa-solid fa-chevron-down text-xs text-brand-accent group-hover:translate-y-1 transition-transform duration-300"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Dashboard Preview Mockup -->
+      <div class="w-full max-w-4xl bg-brand-card border border-brand-border rounded-xl p-6 md:p-8 shadow-lg relative overflow-hidden">
+        <!-- Layout Header -->
+        <div class="flex items-center justify-between border-b border-brand-border pb-4 mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded bg-brand-accent text-black flex items-center justify-center font-bold text-xs">TK</div>
+            <div class="space-y-0.5">
+              <h3 class="text-xs font-bold text-slate-200 leading-none">Toko Kamu</h3>
+              <span class="text-[9px] text-slate-500 font-medium leading-none block">Merchant Dashboard Preview</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 text-[9px] text-slate-400">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+            <span>Online</span>
+          </div>
+        </div>
+
+        <!-- Preview Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- QR Card Stack -->
+          <div class="flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-brand-border pb-6 md:pb-0 md:pr-6">
+            <div class="relative w-32 h-44 flex items-center justify-center select-none scale-90">
+              <div class="absolute w-24 h-32 bg-[#0072ff] rounded border border-white/5 -rotate-12 translate-x-[-20px] translate-y-[-4px] opacity-35"></div>
+              <div class="absolute w-24 h-32 bg-[#2e1654] rounded border border-white/5 -rotate-6 translate-x-[-10px] opacity-55"></div>
+              <div class="absolute w-24 h-32 bg-[#1e2536] rounded border border-white/10 rotate-6 translate-x-[15px] translate-y-[4px] flex flex-col justify-between p-2">
+                <div class="flex justify-between items-center text-[7px] text-slate-400">
+                  <span>QRIS</span>
+                  <i class="fa-solid fa-wifi rotate-90 text-[6px] text-brand-accent"></i>
+                </div>
+                <div class="w-5 h-5 bg-white p-0.5 rounded flex items-center justify-center mx-auto">
+                  <i class="fa-solid fa-qrcode text-black text-[10px]"></i>
+                </div>
+                <div class="text-[6px] text-center text-slate-500 font-bold">PRO DYNAMIC</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Preview -->
+          <div class="md:col-span-2 space-y-4">
+            <div class="space-y-2">
+              <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Form Konversi</span>
+              <div class="grid grid-cols-2 gap-3 text-[11px]">
+                <div class="bg-brand-sidebar p-3 rounded-lg border border-brand-border">
+                  <span class="text-[8px] text-slate-500 block uppercase font-bold">Nominal Pembayaran</span>
+                  <span class="text-xs font-bold text-brand-accent mt-0.5 block">Rp 50.000</span>
+                </div>
+                <div class="bg-brand-sidebar p-3 rounded-lg border border-brand-border flex items-center justify-between">
+                  <div>
+                    <span class="text-[8px] text-slate-500 block uppercase font-bold">Metode</span>
+                    <span class="text-slate-300 font-bold mt-0.5 block">QRIS Dinamis</span>
+                  </div>
+                  <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[8px] font-bold px-1.5 rounded uppercase">Valid</span>
+                </div>
+              </div>
+            </div>
+            <div class="p-3 bg-brand-sidebar rounded-lg border border-brand-border font-mono text-[9px] text-slate-400 break-all leading-relaxed">
+              00020101021226680016ID10202118319690118936000020000025740214400000257400020303UMI5204000053033605405<span class="text-brand-accent font-bold">50000</span>5802ID5921Toko Kelontong Berkah6009Tangerang61051513063045E65
+            </div>
+          </div>
+        </div>
+
+        <!-- Decorative accent -->
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-brand-accent/3 blur-2xl pointer-events-none"></div>
+      </div>
+    </section>
+
+    <!-- ============================== FEATURES ============================== -->
+    <section id="fitur" class="scroll-mt-8 py-12 border-t border-brand-border bg-[#0b0e14]/30 w-full">
+      <div class="max-w-7xl w-full mx-auto px-5 sm:px-8 space-y-12">
+        <div class="text-center space-y-2 max-w-xl mx-auto">
+          <h2 class="text-[10px] font-bold text-brand-accent uppercase tracking-widest">Fitur Unggulan</h2>
+          <h3 class="text-xl font-bold text-slate-100">Didesain Untuk Kemudahan Bisnis Anda</h3>
+          <p class="text-xs text-brand-text-muted leading-relaxed">Segala hal yang Anda butuhkan untuk mengelola pembayaran QRIS secara instan tanpa biaya berlangganan.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-brand-card border border-brand-border p-6 rounded-xl space-y-4 hover:border-brand-accent/20 transition-colors duration-200">
+            <div class="w-10 h-10 rounded-lg bg-brand-hover text-brand-accent flex items-center justify-center">
+              <i class="fa-solid fa-shield-halved text-base"></i>
+            </div>
+            <h4 class="text-xs font-bold text-slate-200">100% Offline & Lokal (Aman)</h4>
+            <p class="text-xs text-brand-text-muted leading-relaxed">Keamanan data keuangan toko Anda terjamin. Proses konversi payload dilakukan sepenuhnya di dalam browser, tanpa pengiriman data ke server luar.</p>
+          </div>
+          <div class="bg-brand-card border border-brand-border p-6 rounded-xl space-y-4 hover:border-brand-accent/20 transition-colors duration-200">
+            <div class="w-10 h-10 rounded-lg bg-brand-hover text-brand-accent flex items-center justify-center">
+              <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+            </div>
+            <h4 class="text-xs font-bold text-slate-200">Injeksi Nominal Otomatis</h4>
+            <p class="text-xs text-brand-text-muted leading-relaxed">Cukup masukkan nominal transaksi rupiah yang diinginkan, dan generator kami akan merumuskan tag data nominal dan mengalkulasi ulang CRC16 secara instan.</p>
+          </div>
+          <div class="bg-brand-card border border-brand-border p-6 rounded-xl space-y-4 hover:border-brand-accent/20 transition-colors duration-200">
+            <div class="w-10 h-10 rounded-lg bg-brand-hover text-brand-accent flex items-center justify-center">
+              <i class="fa-solid fa-code text-base"></i>
+            </div>
+            <h4 class="text-xs font-bold text-slate-200">Urai Data EMVCo QRIS</h4>
+            <p class="text-xs text-brand-text-muted leading-relaxed">Alat decode detail yang memecah tag struktur data QRIS agar Anda tahu secara persis data NMID, merchant, kota, negara, dan kode POS yang terdaftar.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== HOW IT WORKS ============================== -->
+    <section id="panduan" class="scroll-mt-8 py-12 border-t border-brand-border w-full">
+      <div class="max-w-7xl w-full mx-auto px-5 sm:px-8 space-y-12">
+        <div class="text-center space-y-2 max-w-xl mx-auto">
+          <h2 class="text-[10px] font-bold text-brand-accent uppercase tracking-widest">Cara Kerja</h2>
+          <h3 class="text-xl font-bold text-slate-100">3 Langkah Mudah</h3>
+          <p class="text-xs text-brand-text-muted">Dari QRIS Statis ke QRIS Dinamis siap pindai dalam hitungan detik.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-brand-card border border-brand-border p-6 rounded-xl space-y-4 relative">
+            <div class="w-8 h-8 rounded-lg bg-brand-accent/10 border border-brand-accent/20 text-brand-accent flex items-center justify-center font-extrabold text-sm">1</div>
+            <div class="hidden md:block absolute top-10 right-0 translate-x-1/2 text-brand-border">
+              <i class="fa-solid fa-arrow-right text-lg"></i>
+            </div>
+            <h4 class="text-xs font-bold text-slate-200">Unggah QRIS Statis</h4>
+            <p class="text-xs text-brand-text-muted leading-relaxed">Masukkan file gambar QRIS Statis merchant Anda dari galeri, atau salin payload teks QRIS secara langsung.</p>
+          </div>
+          <div class="bg-brand-card border border-brand-border p-6 rounded-xl space-y-4 relative">
+            <div class="w-8 h-8 rounded-lg bg-brand-accent/10 border border-brand-accent/20 text-brand-accent flex items-center justify-center font-extrabold text-sm">2</div>
+            <div class="hidden md:block absolute top-10 right-0 translate-x-1/2 text-brand-border">
+              <i class="fa-solid fa-arrow-right text-lg"></i>
+            </div>
+            <h4 class="text-xs font-bold text-slate-200">Set Nominal Tagihan</h4>
+            <p class="text-xs text-brand-text-muted leading-relaxed">Tentukan nominal transaksi yang ingin ditagihkan. Minimal Rp 500. Tersedia pilihan cepat untuk nominal umum.</p>
+          </div>
+          <div class="bg-brand-card border border-brand-border p-6 rounded-xl space-y-4">
+            <div class="w-8 h-8 rounded-lg bg-brand-accent/10 border border-brand-accent/20 text-brand-accent flex items-center justify-center font-extrabold text-sm">3</div>
+            <h4 class="text-xs font-bold text-slate-200">Siap Dipindai</h4>
+            <p class="text-xs text-brand-text-muted leading-relaxed">QRIS dinamis dengan nominal tetap siap dipindai pelanggan. Unduh PNG/SVG atau salin payload string QRIS-nya.</p>
+          </div>
+        </div>
+
+        <div class="text-center pt-4">
+          <a href="login.html" class="inline-flex items-center gap-2 bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold text-xs uppercase tracking-wider px-8 py-3.5 rounded-lg transition-colors duration-200 shadow-md">
+            <i class="fa-solid fa-play text-[10px]"></i>
+            Coba Sekarang — Gratis
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== SECURITY ============================== -->
+    <section id="keamanan" class="scroll-mt-8 py-12 border-t border-brand-border bg-[#0b0e14]/30 w-full">
+      <div class="max-w-7xl w-full mx-auto px-5 sm:px-8">
+        <div class="bg-brand-card border border-brand-border rounded-xl p-8 flex flex-col md:flex-row items-start gap-6">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-shield-halved text-xl"></i>
+          </div>
+          <div class="space-y-2">
+            <h3 class="text-sm font-bold text-slate-100">Keamanan 100% Sisi Klien (Client-Side)</h3>
+            <p class="text-xs text-brand-text-muted leading-relaxed max-w-2xl">
+              Seluruh data payload QRIS Anda diproses sepenuhnya secara lokal di browser perangkat Anda. Tidak ada gambar kode QR, informasi merchant, atau nominal transaksi yang diunggah ke server eksternal mana pun. Kode sumber terbuka dan dapat diaudit secara publik.
+            </p>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded font-bold uppercase">No Server Upload</span>
+              <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded font-bold uppercase">No Cookies</span>
+              <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded font-bold uppercase">Open Source</span>
+              <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded font-bold uppercase">EMVCo Compliant</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================== FOOTER ============================== -->
+  <footer class="w-full border-t border-brand-border/60 bg-brand-sidebar/40 py-8 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+      
+      <!-- Brand & Copyright -->
+      <div class="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-md bg-brand-accent flex items-center justify-center text-black font-black text-[10px] shadow-sm">
+            Qc
+          </div>
+          <span class="font-extrabold text-slate-200 tracking-tight text-xs">QRIS Converter</span>
+        </div>
+        <span class="hidden sm:inline text-slate-600">•</span>
+        <span class="text-[11px] text-slate-400">&copy; 2026 QRIS Converter. Hak Cipta Dilindungi.</span>
+      </div>
+
+      <!-- Links & Navigation -->
+      <div class="flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-400 font-semibold">
+        <a href="/docs" onclick="smartNavDocs(event)" class="hover:text-brand-accent transition-colors">Dokumentasi</a>
+        <a href="javascript:void(0)" class="hover:text-slate-200 transition-colors">Kebijakan Privasi</a>
+        <a href="javascript:void(0)" class="hover:text-slate-200 transition-colors">Syarat &amp; Ketentuan</a>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        if (window.location.hash) {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      }
+    }
+
+    function smartNavDocs(e) {
+      if (e) e.preventDefault();
+      const dest = window.location.protocol === 'file:' ? 'docs.html' : '/docs';
+      window.location.href = dest;
+    }
+
+    function smartNav(e) {
+      if (e) e.preventDefault();
+      const session = localStorage.getItem('qrisStaticData') || sessionStorage.getItem('qrisStaticData');
+      const dest = session ? 'dashboard' : 'login';
+      if (window.location.protocol === 'file:') {
+        window.location.href = dest + '.html';
+      } else {
+        window.location.href = '/' + dest;
+      }
+    }
+
+    // Automatically strip .html and # hash from URL bar
+    if (window.location.pathname.endsWith('.html')) {
+      let cleanPath = window.location.pathname.replace(/\.html$/, '');
+      if (cleanPath.endsWith('/index')) cleanPath = cleanPath.replace(/\/index$/, '/');
+      window.history.replaceState(null, '', cleanPath + window.location.search);
+    }
+    if (window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "qris-converter",
+  "version": "1.0.0",
+  "description": "Konverter QRIS Statis ke Dinamis dengan Nominal Otomatis (EMVCo & BI GPN Compliant)",
+  "license": "MIT",
+  "author": "Open Source Community",
+  "type": "module",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./input.css -o ./style.css --minify",
+    "build:js": "npx esbuild app.js --bundle --outfile=app.bundle.js --format=iife --platform=browser && npx esbuild login.js --bundle --outfile=login.bundle.js --format=iife --platform=browser",
+    "build": "npm run build:css && npm run build:js",
+    "watch:css": "npx tailwindcss -i ./input.css -o ./style.css --watch",
+    "dev": "npx http-server -p 3000",
+    "test": "node --test tests/*.test.js"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "@tailwindcss/cli": "^4.3.1",
+    "esbuild": "^0.28.1",
+    "tailwindcss": "^4.3.1"
+  }
+}

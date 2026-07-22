@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="id" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Dokumentasi Arsitektur Sistem & Spesifikasi - QRIS Converter</title>
+  <meta name="title" content="Dokumentasi Arsitektur Sistem & Spesifikasi - QRIS Converter">
+  <meta name="description" content="Dokumentasi resmi arsitektur sistem, alur kerja penguraian TLV EMVCo, rumus kalkulasi CRC16 CCITT-FALSE, dan panduan deployment QRIS Converter.">
+  <meta name="keywords" content="dokumentasi qris, arsitektur qris converter, emvco tlv parser, crc16 ccitt false, qris dinamis spesifikasi">
+  <meta name="author" content="QRIS Converter Team">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0f121e">
+  
+  <!-- Dynamic Origin & Search Console Verification -->
+  <script>
+    (function() {
+      const cfEnvUrl = (typeof window !== 'undefined' && window.CLOUDFLARE_SITE_URL) ? window.CLOUDFLARE_SITE_URL : '';
+      const siteOrigin = cfEnvUrl || ((window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://qris-dynamic-converter.pages.dev');
+      const cleanPath = window.location.pathname.replace(/\.html$/, '');
+      const fullUrl = siteOrigin + cleanPath;
+      
+      function addMeta(attr, valKey, valVal) {
+        const el = document.createElement('meta');
+        el.setAttribute(attr, valKey);
+        el.setAttribute('content', valVal);
+        document.head.appendChild(el);
+      }
+      function addLink(rel, href) {
+        const el = document.createElement('link');
+        el.setAttribute('rel', rel);
+        el.setAttribute('href', href);
+        document.head.appendChild(el);
+      }
+
+      addLink('canonical', fullUrl);
+      addMeta('property', 'og:url', fullUrl);
+
+      const gVerify = (typeof window !== 'undefined' && window.GOOGLE_SITE_VERIFICATION) ? window.GOOGLE_SITE_VERIFICATION : '';
+      const bVerify = (typeof window !== 'undefined' && (window.BING_SITE_VERIFICATION || window.MSVALIDATE_01)) ? (window.BING_SITE_VERIFICATION || window.MSVALIDATE_01) : '';
+      const yVerify = (typeof window !== 'undefined' && window.YANDEX_SITE_VERIFICATION) ? window.YANDEX_SITE_VERIFICATION : '';
+
+      if (gVerify) addMeta('name', 'google-site-verification', gVerify);
+      if (bVerify) addMeta('name', 'msvalidate.01', bVerify);
+      if (yVerify) addMeta('name', 'yandex-verification', yVerify);
+    })();
+  </script>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Dokumentasi Arsitektur Sistem & Spesifikasi - QRIS Converter">
+  <meta property="og:description" content="Panduan teknis lengkap arsitektur sistem, alur kerja parser EMVCo, dan kalkulasi CRC16 QRIS Converter.">
+  <meta property="og:site_name" content="QRIS Converter">
+  <meta property="og:locale" content="id_ID">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lib/font-awesome/css/all.min.css">
+  
+  <script type="module">
+    import Alpine from './lib/alpine.esm.js';
+    window.Alpine = Alpine;
+
+    Alpine.data('docsApp', () => ({
+      searchQuery: '',
+      activeNav: 'overview',
+      mobileMenuOpen: false,
+      matchesSearch(text) {
+        if (!this.searchQuery.trim()) return true;
+        return text.toLowerCase().includes(this.searchQuery.toLowerCase());
+      }
+    }));
+
+    Alpine.start();
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+<body class="bg-brand-bg text-slate-100 min-h-screen font-sans antialiased overflow-x-hidden" x-data="docsApp">
+
+  <!-- Stripper URL (.html -> Clean Route /docs) -->
+  <script>
+    (function() {
+      if (window.location.pathname.endsWith('.html')) {
+        const cleanPath = window.location.pathname.replace(/\.html$/, '');
+        window.history.replaceState(null, '', cleanPath + window.location.search + window.location.hash);
+      }
+    })();
+  </script>
+
+  <!-- ============================== SIDEBAR DRAWER (MOBILE Z-100) ============================== -->
+  <div x-show="mobileMenuOpen" class="fixed inset-0 z-[100] flex lg:hidden" x-cloak>
+    <!-- Backdrop Blur Overlay -->
+    <div @click="mobileMenuOpen = false" 
+         x-show="mobileMenuOpen" 
+         x-transition:enter="transition-opacity ease-out duration-300" 
+         x-transition:enter-start="opacity-0" 
+         x-transition:enter-end="opacity-100" 
+         x-transition:leave="transition-opacity ease-in duration-200" 
+         x-transition:leave-start="opacity-100" 
+         x-transition:leave-end="opacity-0" 
+         class="fixed inset-0 bg-black/75 backdrop-blur-md z-[100]"></div>
+
+    <!-- Left Slide Drawer -->
+    <div x-show="mobileMenuOpen" 
+         x-transition:enter="transition-transform ease-out duration-300" 
+         x-transition:enter-start="-translate-x-full" 
+         x-transition:enter-end="translate-x-0" 
+         x-transition:leave="transition-transform ease-in duration-200" 
+         x-transition:leave-start="translate-x-0" 
+         x-transition:leave-end="-translate-x-full" 
+         class="relative z-[101] flex flex-col justify-between w-72 max-w-[85vw] bg-brand-sidebar border-r border-brand-border h-full min-h-screen p-6 shadow-2xl overflow-y-auto">
+      
+      <!-- Top Section: Brand & Close Button -->
+      <div class="space-y-5">
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded bg-brand-accent flex items-center justify-center shadow-md">
+              <span class="text-black font-extrabold text-xs tracking-tighter">Qc</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-extrabold text-slate-100 tracking-tight">QRIS Converter</span>
+              <span class="text-[9px] text-slate-400 font-bold uppercase">Documentation</span>
+            </div>
+          </div>
+          
+          <button @click="mobileMenuOpen = false" class="w-8 h-8 flex items-center justify-center rounded-lg bg-brand-hover text-slate-400 hover:text-slate-100 border border-brand-border/60 transition-colors">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="flex items-center relative w-full">
+          <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 pointer-events-none"></i>
+          <input 
+            type="text" 
+            x-model="searchQuery" 
+            placeholder="Cari topik..." 
+            class="w-full bg-brand-bg border border-brand-border rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-accent/60 transition-all placeholder:text-slate-500"
+          >
+        </div>
+
+        <!-- Documentation Table of Contents Links -->
+        <nav class="flex flex-col gap-1.5 pt-1">
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 px-1 py-1">Daftar Isi Dokumentasi</span>
+          
+          <a href="#overview" @click="activeNav = 'overview'; mobileMenuOpen = false" :class="activeNav === 'overview' ? 'text-brand-accent bg-brand-hover border-brand-border font-bold' : 'text-slate-300 border-transparent hover:text-slate-100 hover:bg-brand-hover/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border text-xs font-semibold transition-all">
+            <i class="fa-solid fa-book-open text-brand-accent text-xs w-4"></i>
+            <span>1. Gambaran Umum</span>
+          </a>
+          <a href="#techstack" @click="activeNav = 'techstack'; mobileMenuOpen = false" :class="activeNav === 'techstack' ? 'text-brand-accent bg-brand-hover border-brand-border font-bold' : 'text-slate-300 border-transparent hover:text-slate-100 hover:bg-brand-hover/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border text-xs font-semibold transition-all">
+            <i class="fa-solid fa-code text-brand-accent text-xs w-4"></i>
+            <span>2. Bahasa & Teknologi</span>
+          </a>
+          <a href="#workflow" @click="activeNav = 'workflow'; mobileMenuOpen = false" :class="activeNav === 'workflow' ? 'text-brand-accent bg-brand-hover border-brand-border font-bold' : 'text-slate-300 border-transparent hover:text-slate-100 hover:bg-brand-hover/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border text-xs font-semibold transition-all">
+            <i class="fa-solid fa-diagram-project text-brand-accent text-xs w-4"></i>
+            <span>3. Alur Kerja Aplikasi</span>
+          </a>
+          <a href="#emvco" @click="activeNav = 'emvco'; mobileMenuOpen = false" :class="activeNav === 'emvco' ? 'text-brand-accent bg-brand-hover border-brand-border font-bold' : 'text-slate-300 border-transparent hover:text-slate-100 hover:bg-brand-hover/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border text-xs font-semibold transition-all">
+            <i class="fa-solid fa-microchip text-brand-accent text-xs w-4"></i>
+            <span>4. Spesifikasi EMVCo & CRC16</span>
+          </a>
+          <a href="#security" @click="activeNav = 'security'; mobileMenuOpen = false" :class="activeNav === 'security' ? 'text-brand-accent bg-brand-hover border-brand-border font-bold' : 'text-slate-300 border-transparent hover:text-slate-100 hover:bg-brand-hover/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border text-xs font-semibold transition-all">
+            <i class="fa-solid fa-shield-halved text-brand-accent text-xs w-4"></i>
+            <span>5. Keamanan & SEO</span>
+          </a>
+          <a href="#deployment" @click="activeNav = 'deployment'; mobileMenuOpen = false" :class="activeNav === 'deployment' ? 'text-brand-accent bg-brand-hover border-brand-border font-bold' : 'text-slate-300 border-transparent hover:text-slate-100 hover:bg-brand-hover/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border text-xs font-semibold transition-all">
+            <i class="fa-solid fa-cloud-arrow-up text-brand-accent text-xs w-4"></i>
+            <span>6. Panduan Deployment</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Bottom Action Button Section -->
+      <div class="pt-5 mt-6 border-t border-brand-border/60 space-y-2">
+        <a href="/" onclick="smartNavHome(event); mobileMenuOpen = false" class="w-full bg-brand-bg hover:bg-brand-hover text-slate-300 font-bold text-xs py-2.5 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 border border-brand-border">
+          <i class="fa-solid fa-house text-xs"></i>
+          <span>Kembali ke Beranda</span>
+        </a>
+        <a href="/login" onclick="smartNavLogin(event); mobileMenuOpen = false" class="w-full bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold text-xs uppercase tracking-wider py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-brand-accent/10">
+          <i class="fa-solid fa-right-to-bracket text-sm"></i>
+          <span>Buka App (Masuk)</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================== NAVBAR ============================== -->
+  <header class="w-full border-b border-brand-border sticky top-0 z-40 bg-brand-bg/95 backdrop-blur-md">
+    <nav class="h-14 sm:h-16 flex items-center justify-between px-4 sm:px-8 max-w-7xl w-full mx-auto">
+      
+      <!-- Brand Logo -->
+      <a href="/" onclick="smartNavHome(event)" class="flex items-center gap-2.5 group">
+        <div class="w-9 h-9 rounded-lg bg-brand-accent flex items-center justify-center shadow-md shadow-brand-accent/10 transition-transform duration-300 group-hover:scale-105">
+          <span class="text-black font-extrabold text-sm tracking-tighter">Qc</span>
+        </div>
+        <span class="font-extrabold text-sm sm:text-base text-slate-100 leading-none group-hover:text-brand-accent transition-colors">QRIS Converter</span>
+      </a>
+
+      <!-- Nav Links (Desktop) -->
+      <div class="hidden lg:flex items-center gap-8 text-xs font-semibold text-slate-400">
+        <a href="/" onclick="smartNavHome(event)" class="hover:text-slate-100 transition-colors">Beranda</a>
+        <a href="/#fitur" class="hover:text-slate-100 transition-colors">Fitur</a>
+        <a href="/#panduan" class="hover:text-slate-100 transition-colors">Cara Kerja</a>
+        <a href="/#keamanan" class="hover:text-slate-100 transition-colors">Keamanan</a>
+        <a href="/docs" class="text-brand-accent font-bold">Dokumentasi</a>
+      </div>
+
+      <!-- Action Buttons & Mobile Hamburger -->
+      <div class="flex items-center gap-3">
+        <a href="/login" onclick="smartNavLogin(event)" class="max-lg:hidden flex items-center bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold text-xs uppercase tracking-wider px-4 py-2 rounded-lg transition-colors duration-200 gap-1.5 shadow-md shadow-brand-accent/5">
+          <i class="fa-solid fa-right-to-bracket text-xs"></i>
+          <span>Masuk</span>
+        </a>
+
+        <!-- Mobile Hamburger Button -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-slate-300 hover:text-brand-accent p-2 rounded-lg bg-brand-sidebar border border-brand-border transition-colors flex items-center justify-center w-9 h-9" aria-label="Menu Navigasi Mobile">
+          <i class="fa-solid" :class="mobileMenuOpen ? 'fa-xmark text-sm' : 'fa-bars text-sm'"></i>
+        </button>
+      </div>
+
+    </nav>
+  </header>
+
+  <!-- ============================== MAIN CONTENT LAYOUT ============================== -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10 flex flex-col lg:flex-row gap-8">
+
+    <!-- Desktop Permanent Left Sidebar -->
+    <aside class="hidden lg:block w-64 flex-shrink-0">
+      <div class="sticky top-20 space-y-4 bg-brand-sidebar/60 border border-brand-border/60 rounded-2xl p-4 backdrop-blur-sm">
+        
+        <!-- Search Bar -->
+        <div class="flex items-center relative w-full">
+          <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 pointer-events-none"></i>
+          <input 
+            type="text" 
+            x-model="searchQuery" 
+            placeholder="Cari topik..." 
+            class="w-full bg-brand-bg border border-brand-border rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-accent/60 transition-all placeholder:text-slate-500"
+          >
+        </div>
+
+        <div class="px-2 pt-1">
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">Daftar Isi Dokumentasi</span>
+        </div>
+        
+        <nav class="space-y-1">
+          <a href="#overview" @click="activeNav = 'overview'" :class="activeNav === 'overview' ? 'bg-brand-hover text-brand-accent border-l-2 border-brand-accent font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-brand-sidebar/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs transition-all">
+            <i class="fa-solid fa-book-open text-xs w-4"></i>
+            <span>1. Gambaran Umum</span>
+          </a>
+          
+          <a href="#techstack" @click="activeNav = 'techstack'" :class="activeNav === 'techstack' ? 'bg-brand-hover text-brand-accent border-l-2 border-brand-accent font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-brand-sidebar/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs transition-all">
+            <i class="fa-solid fa-code text-xs w-4"></i>
+            <span>2. Bahasa & Teknologi</span>
+          </a>
+          
+          <a href="#workflow" @click="activeNav = 'workflow'" :class="activeNav === 'workflow' ? 'bg-brand-hover text-brand-accent border-l-2 border-brand-accent font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-brand-sidebar/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs transition-all">
+            <i class="fa-solid fa-diagram-project text-xs w-4"></i>
+            <span>3. Alur Kerja Aplikasi</span>
+          </a>
+          
+          <a href="#emvco" @click="activeNav = 'emvco'" :class="activeNav === 'emvco' ? 'bg-brand-hover text-brand-accent border-l-2 border-brand-accent font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-brand-sidebar/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs transition-all">
+            <i class="fa-solid fa-microchip text-xs w-4"></i>
+            <span>4. Spesifikasi EMVCo & CRC16</span>
+          </a>
+          
+          <a href="#security" @click="activeNav = 'security'" :class="activeNav === 'security' ? 'bg-brand-hover text-brand-accent border-l-2 border-brand-accent font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-brand-sidebar/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs transition-all">
+            <i class="fa-solid fa-shield-halved text-xs w-4"></i>
+            <span>5. Keamanan & SEO</span>
+          </a>
+          
+          <a href="#deployment" @click="activeNav = 'deployment'" :class="activeNav === 'deployment' ? 'bg-brand-hover text-brand-accent border-l-2 border-brand-accent font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-brand-sidebar/40'" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs transition-all">
+            <i class="fa-solid fa-cloud-arrow-up text-xs w-4"></i>
+            <span>6. Panduan Deployment</span>
+          </a>
+        </nav>
+
+        <!-- Quick Summary Box -->
+        <div class="p-3.5 bg-brand-bg/60 border border-brand-border rounded-xl space-y-2 mt-4">
+          <div class="flex items-center gap-2 text-brand-accent">
+            <i class="fa-solid fa-circle-check text-xs"></i>
+            <span class="text-[11px] font-bold">Standard Spec Verified</span>
+          </div>
+          <p class="text-[10px] text-slate-400 leading-relaxed">Sesuai petunjuk teknis Bank Indonesia (GPN) & spesifikasi QR Code EMVCo.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Articles -->
+    <main class="flex-1 space-y-12 min-w-0">
+
+      <!-- Hero Header Section -->
+      <section class="space-y-3 border-b border-brand-border/60 pb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/20 text-brand-accent text-[11px] font-extrabold tracking-wider uppercase">
+          <i class="fa-solid fa-file-code text-[11px]"></i>
+          <span>System Documentation v1.0</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-100 tracking-tight leading-tight">
+          Dokumentasi Arsitektur & Spesifikasi Teknis
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl">
+          Dokumen teknis resmi mengenai arsitektur sistem, bahasa pemrograman, spesifikasi algoritma CRC16, penguraian TLV EMVCo, dan panduan deployment platform **QRIS Converter**.
+        </p>
+      </section>
+
+      <!-- 1. Gambaran Umum System -->
+      <section id="overview" x-show="matchesSearch('1. gambaran umum sistem executive overview zero-trust privacy zero backend')" class="scroll-mt-24 space-y-3">
+        <div class="flex items-center gap-2.5 pb-2 border-b border-brand-border/40">
+          <div class="w-6 h-6 rounded-md bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-black flex items-center justify-center text-[11px] flex-shrink-0">
+            1
+          </div>
+          <h2 class="text-xs sm:text-base font-extrabold text-slate-100 tracking-tight">Gambaran Umum Sistem (Executive Overview)</h2>
+        </div>
+
+        <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl p-2.5 sm:p-6 space-y-3">
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <strong class="text-slate-100">QRIS Converter</strong> adalah aplikasi web modern berkinerja tinggi yang dirancang untuk mengonversi kode <strong class="text-brand-accent">QRIS Statis</strong> (tanpa nominal) milik merchant menjadi <strong class="text-brand-accent">QRIS Dinamis</strong> (dengan nominal tagihan rupiah otomatis).
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+            <div class="bg-brand-bg/70 border border-brand-border/60 p-3 sm:p-4 rounded-lg sm:rounded-xl space-y-1">
+              <div class="text-brand-accent font-bold text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt text-xs"></i>
+                <span>Nol Kesalahan Nominal</span>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-relaxed">Mencegah kesalahan ketik jumlah pembayaran oleh pembeli saat transaksi di kasir.</p>
+            </div>
+
+            <div class="bg-brand-bg/70 border border-brand-border/60 p-3 sm:p-4 rounded-lg sm:rounded-xl space-y-1">
+              <div class="text-brand-accent font-bold text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-coins text-xs"></i>
+                <span>Tanpa Sewa EDC / API</span>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-relaxed">Menghemat biaya merchant tanpa perlu langganan API gateway atau menyewa mesin EDC mahal.</p>
+            </div>
+
+            <div class="bg-brand-bg/70 border border-brand-border/60 p-3 sm:p-4 rounded-lg sm:rounded-xl space-y-1">
+              <div class="text-brand-accent font-bold text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-user-shield text-xs"></i>
+                <span>100% Client-Side Engine</span>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-relaxed">Seluruh proses dilakukan di browser lokal. Data toko dijamin 100% aman tanpa server upload.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Teknologi & Bahasa Pemrograman -->
+      <section id="techstack" x-show="matchesSearch('2. bahasa pemrograman teknologi tech stack javascript html5 alpine.js tailwind css esbuild node.js')" class="scroll-mt-24 space-y-3">
+        <div class="flex items-center gap-2.5 pb-2 border-b border-brand-border/40">
+          <div class="w-6 h-6 rounded-md bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-black flex items-center justify-center text-[11px] flex-shrink-0">
+            2
+          </div>
+          <h2 class="text-xs sm:text-base font-extrabold text-slate-100 tracking-tight">Bahasa Pemrograman & Teknologi (Tech Stack)</h2>
+        </div>
+
+        <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-brand-bg/80 border-b border-brand-border text-slate-400 uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="p-2.5 sm:p-4">Komponen</th>
+                  <th class="p-2.5 sm:p-4">Teknologi</th>
+                  <th class="p-2.5 sm:p-4">Peran & Alasan Pemilihan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-brand-border/60 text-slate-300">
+                <tr class="hover:bg-brand-hover/40 transition-colors">
+                  <td class="p-2.5 sm:p-4 font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-brands fa-js text-amber-400"></i>
+                    Core Engine
+                  </td>
+                  <td class="p-2.5 sm:p-4 font-mono text-brand-accent">JavaScript (ES6+)</td>
+                  <td class="p-2.5 sm:p-4 text-slate-400 leading-relaxed">Pengolahan manipulasi string TLV, kalkulasi bitwise CRC-16, dan logika state reaktif.</td>
+                </tr>
+
+                <tr class="hover:bg-brand-hover/40 transition-colors">
+                  <td class="p-2.5 sm:p-4 font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-brands fa-html5 text-orange-500"></i>
+                    Struktur UI
+                  </td>
+                  <td class="p-2.5 sm:p-4 font-mono text-brand-accent">HTML5 Semantik</td>
+                  <td class="p-2.5 sm:p-4 text-slate-400 leading-relaxed">Struktur halaman yang rapi, aksesibel, dan teroptimasi penuh untuk SEO Google.</td>
+                </tr>
+
+                <tr class="hover:bg-brand-hover/40 transition-colors">
+                  <td class="p-2.5 sm:p-4 font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-cube text-emerald-400"></i>
+                    Reaktivitas UI
+                  </td>
+                  <td class="p-2.5 sm:p-4 font-mono text-brand-accent">Alpine.js v3</td>
+                  <td class="p-2.5 sm:p-4 text-slate-400 leading-relaxed">Framework reaktif super ringan (~15KB) tanpa butuh Virtual DOM berat atau bundler React/Vue.</td>
+                </tr>
+
+                <tr class="hover:bg-brand-hover/40 transition-colors">
+                  <td class="p-2.5 sm:p-4 font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-brands fa-css3-alt text-sky-400"></i>
+                    Styling System
+                  </td>
+                  <td class="p-2.5 sm:p-4 font-mono text-brand-accent">Tailwind CSS v4 & CSS3</td>
+                  <td class="p-2.5 sm:p-4 text-slate-400 leading-relaxed">Design system tema gelap (*Dark Mode*), tata letak responsif, glassmorphism, dan mikro-animasi.</td>
+                </tr>
+
+                <tr class="hover:bg-brand-hover/40 transition-colors">
+                  <td class="p-2.5 sm:p-4 font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-yellow-400"></i>
+                    Bundler & Test
+                  </td>
+                  <td class="p-2.5 sm:p-4 font-mono text-brand-accent">Esbuild & Node Test</td>
+                  <td class="p-2.5 sm:p-4 text-slate-400 leading-relaxed">Kompilasi super cepat (< 15ms) dan pengujian unit otomatis (`npm test`) untuk 8 sub-test.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Alur Kerja Aplikasi -->
+      <section id="workflow" x-show="matchesSearch('3. alur kerja aplikasi system workflow input qris merchant emvco nominal tagihan crc16')" class="scroll-mt-24 space-y-3">
+        <div class="flex items-center gap-2.5 pb-2 border-b border-brand-border/40">
+          <div class="w-6 h-6 rounded-md bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-black flex items-center justify-center text-[11px] flex-shrink-0">
+            3
+          </div>
+          <h2 class="text-xs sm:text-base font-extrabold text-slate-100 tracking-tight">Alur Kerja Aplikasi (System Workflow)</h2>
+        </div>
+
+        <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl p-2.5 sm:p-6 space-y-4">
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Langkah-demi-Langkah Pengolahan Data:</h3>
+            
+            <div class="space-y-2.5">
+              <div class="flex gap-2.5 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg/70 border border-brand-border/60">
+                <div class="w-6 h-6 rounded-md bg-brand-accent text-black font-extrabold flex items-center justify-center flex-shrink-0 text-[11px]">
+                  1
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-slate-100">Input QRIS Merchant (`/login`)</h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed">Merchant mengunggah gambar QRIS (dibaca via parser piksel `jsQR`) atau menempelkan payload teks QRIS Statis.</p>
+                </div>
+              </div>
+
+              <div class="flex gap-2.5 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg/70 border border-brand-border/60">
+                <div class="w-6 h-6 rounded-md bg-brand-accent text-black font-extrabold flex items-center justify-center flex-shrink-0 text-[11px]">
+                  2
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-slate-100">Verifikasi Struktur EMVCo</h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed">Engine mengurai Tag 00-63, mengekstrak Nama Toko, Kota, NMID, dan memvalidasi kode checksum CRC-16 asli.</p>
+                </div>
+              </div>
+
+              <div class="flex gap-2.5 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg/70 border border-brand-border/60">
+                <div class="w-6 h-6 rounded-md bg-brand-accent text-black font-extrabold flex items-center justify-center flex-shrink-0 text-[11px]">
+                  3
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-slate-100">Input Nominal Tagihan (`/dashboard`)</h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed">Kasir menentukan nominal rupiah pembayaran (misal: Rp 75.000). Engine menginjeksi Tag 54 dan merubah Tag 01 ke `12` (Dinamis).</p>
+                </div>
+              </div>
+
+              <div class="flex gap-2.5 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg/70 border border-brand-border/60">
+                <div class="w-6 h-6 rounded-md bg-brand-accent text-black font-extrabold flex items-center justify-center flex-shrink-0 text-[11px]">
+                  4
+                </div>
+                <div class="space-y-0.5">
+                  <h4 class="text-xs font-bold text-slate-100">Kalkulasi Ulang Checksum CRC-16 & Render QR</h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed">Engine menghitung ulang checksum CRC-16 CCITT-FALSE (`0x1021`) dan merender gambar QR Code yang siap dipindai oleh semua aplikasi m-Banking/e-Wallet.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Spesifikasi EMVCo, Formula CRC16 & Pipeline Transformasi -->
+      <section id="emvco" x-show="matchesSearch('4. spesifikasi emvco formula crc16 pipeline transformasi gambar payload tlv modifikasi nominal')" class="scroll-mt-24 space-y-3">
+        <div class="flex items-center gap-2.5 pb-2 border-b border-brand-border/40">
+          <div class="w-6 h-6 rounded-md bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-black flex items-center justify-center text-[11px] flex-shrink-0">
+            4
+          </div>
+          <h2 class="text-xs sm:text-base font-extrabold text-slate-100 tracking-tight">Spesifikasi EMVCo, Formula CRC16 & Pipeline Transformasi</h2>
+        </div>
+
+        <!-- Detailed Transformation Pipeline Breakdown -->
+        <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl p-2.5 sm:p-6 space-y-4">
+          <div class="border-b border-brand-border/60 pb-4 space-y-1">
+            <h3 class="text-sm font-bold text-brand-accent uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-arrows-spin"></i>
+              <span>Pipeline Transformasi: Gambar Statis ➔ Payload ➔ Modifikasi Nominal ➔ Gambar Dinamis Baru</span>
+            </h3>
+            <p class="text-xs text-slate-400 leading-relaxed">Penjelasan rinci mekanisme pengubahan gambar barcode statis menjadi string data, modifikasi tag nominal, hingga perenderan kembali gambar QRIS baru.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Phase 1 -->
+            <div class="bg-brand-bg/90 border border-brand-border hover:border-brand-accent/40 transition-all duration-300 p-6 rounded-2xl space-y-4 shadow-lg shadow-black/20 flex flex-col justify-between relative group">
+              <div class="space-y-4">
+                <div class="px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-extrabold text-[10px] tracking-wider uppercase inline-flex items-center gap-1.5 w-max">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse"></span>
+                  <span>Fase 1</span>
+                </div>
+                
+                <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-brand-hover text-brand-accent flex items-center justify-center border border-brand-border flex-shrink-0">
+                    <i class="fa-solid fa-file-image text-xs"></i>
+                  </div>
+                  <span class="leading-tight">Gambar ➔ Payload Teks</span>
+                </h4>
+                
+                <ul class="text-xs text-slate-400 space-y-3 leading-relaxed">
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">1. Reading File</strong>
+                    <span class="text-[11px] block text-slate-400">Berkas gambar QRIS (PNG/JPG) dibaca peramban via <code class="font-mono text-brand-accent bg-brand-bg px-1 py-0.5 rounded">FileReader.readAsDataURL()</code>.</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">2. Canvas Rendering</strong>
+                    <span class="text-[11px] block text-slate-400">Gambar digambar ke HTML5 Offscreen Canvas tersembunyi.</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">3. Buffer Pixel RGBA</strong>
+                    <span class="text-[11px] block text-slate-400">Mengambil array piksel RGBA via <code class="font-mono text-brand-accent bg-brand-bg px-1 py-0.5 rounded">ctx.getImageData()</code>.</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">4. QR Matrix Decoding</strong>
+                    <span class="text-[11px] block text-slate-400">Library <code class="font-mono text-brand-accent bg-brand-bg px-1 py-0.5 rounded">jsQR</code> memindai matriks barcode, menghasilkan string mentah EMVCo (<code class="font-mono text-brand-accent">000201...</code>).</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="bg-brand-bg/90 border border-brand-border hover:border-brand-accent/40 transition-all duration-300 p-6 rounded-2xl space-y-4 shadow-lg shadow-black/20 flex flex-col justify-between relative group">
+              <div class="space-y-4">
+                <div class="px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-extrabold text-[10px] tracking-wider uppercase inline-flex items-center gap-1.5 w-max">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse"></span>
+                  <span>Fase 2</span>
+                </div>
+                
+                <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-brand-hover text-brand-accent flex items-center justify-center border border-brand-border flex-shrink-0">
+                    <i class="fa-solid fa-sliders text-xs"></i>
+                  </div>
+                  <span class="leading-tight">Pemecah TLV & Modifikasi</span>
+                </h4>
+                
+                <ul class="text-xs text-slate-400 space-y-3 leading-relaxed">
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">1. Pointer TLV Parser</strong>
+                    <span class="text-[11px] block text-slate-400">Loop cursor memecah string berdasarkan pola <code class="font-mono text-brand-accent bg-brand-bg px-1 py-0.5 rounded">[Tag 2d][Length 2d][Value]</code>.</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">2. Mode Statis ➔ Dinamis</strong>
+                    <span class="text-[11px] block text-slate-400">Nilai <code class="font-mono text-brand-accent bg-brand-bg px-1 py-0.5 rounded">Tag 01</code> diubah dari <code class="font-mono text-slate-300">11</code> (Statis) ke <code class="font-mono text-emerald-400">12</code> (Dinamis).</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">3. Injeksi Tag Nominal (54)</strong>
+                    <span class="text-[11px] block text-slate-400">Menyisipkan <code class="font-mono text-brand-accent bg-brand-bg px-1 py-0.5 rounded">Tag 54</code> (misal: <code class="font-mono text-emerald-400">540550000</code> untuk Rp 50.000).</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">4. Rekalkulasi CRC16</strong>
+                    <span class="text-[11px] block text-slate-400">Menghapus CRC lama, hitung ulang CRC-16 CCITT-FALSE (<code class="font-mono text-slate-300">0x1021</code>), dan tempel 4-hex digit baru (<code class="font-mono text-emerald-400">E65F</code>).</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="bg-brand-bg/90 border border-brand-border hover:border-brand-accent/40 transition-all duration-300 p-6 rounded-2xl space-y-4 shadow-lg shadow-black/20 flex flex-col justify-between relative group">
+              <div class="space-y-4">
+                <div class="px-3 py-1 rounded-full bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-extrabold text-[10px] tracking-wider uppercase inline-flex items-center gap-1.5 w-max">
+                  <span class="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse"></span>
+                  <span>Fase 3</span>
+                </div>
+                
+                <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-brand-hover text-brand-accent flex items-center justify-center border border-brand-border flex-shrink-0">
+                    <i class="fa-solid fa-qrcode text-xs"></i>
+                  </div>
+                  <span class="leading-tight">Payload Teks ➔ Gambar Baru</span>
+                </h4>
+                
+                <ul class="text-xs text-slate-400 space-y-3 leading-relaxed">
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">1. Matriks QR Generation</strong>
+                    <span class="text-[11px] block text-slate-400">Payload dinamis baru dihitung oleh generator <code class="font-mono text-brand-accent bg-brand-bg px-1 py-0.5 rounded">QRCode.js</code>.</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">2. Canvas Rendering</strong>
+                    <span class="text-[11px] block text-slate-400">Gambar QR Code beresolusi tinggi digambar pada canvas HTML5.</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">3. PNG Data Export</strong>
+                    <span class="text-[11px] block text-slate-400">Canvas diekspor menjadi Data URL PNG (<code class="font-mono text-brand-accent bg-brand-bg px-1 py-0.5 rounded">canvas.toDataURL()</code>).</span>
+                  </li>
+                  <li class="p-2.5 rounded-lg bg-brand-sidebar/60 border border-brand-border/60 space-y-0.5">
+                    <strong class="text-slate-200 block text-[11px]">4. Output Siap Scan</strong>
+                    <span class="text-[11px] block text-slate-400">Gambar QRIS Dinamis siap diunduh PNG atau langsung dipindai oleh HP pembeli.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-brand-bg border border-brand-border font-mono text-[11px] text-slate-300 space-y-2">
+            <div class="text-slate-500">// Contoh Perubahan Payload String QRIS (Statis ➔ Dinamis)</div>
+            <div>
+              <span class="text-rose-400">QRIS Statis:  </span> 000201<span class="text-rose-400">010211</span>...5303360<span class="text-rose-400">6304A1B2</span><br>
+              <span class="text-emerald-400">QRIS Dinamis: </span> 000201<span class="text-emerald-400">010212</span>...5303360<span class="text-emerald-400">540550000</span><span class="text-emerald-400">6304E65F</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-brand-sidebar border border-brand-border rounded-2xl p-6 space-y-4">
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Format data QRIS mengikuti standar <strong class="text-slate-100">EMVCo QR Code Specification</strong> dengan pola <code class="bg-brand-bg px-1.5 py-0.5 rounded text-brand-accent font-mono">[Tag 2-digit][Length 2-digit][Value]</code>.
+          </p>
+
+          <!-- Code Snippet Box -->
+          <div class="bg-brand-bg border border-brand-border rounded-xl p-4 space-y-2 font-mono text-[11px]">
+            <div class="text-slate-500">// Contoh Struktur Tag QRIS Dinamis Hasil Konversi</div>
+            <div class="text-slate-300">
+              <span class="text-amber-400">000201</span> <span class="text-slate-500">(Payload Format = 01)</span><br>
+              <span class="text-amber-400">010212</span> <span class="text-slate-500">(Point of Initiation = 12 Dynamic)</span><br>
+              <span class="text-amber-400">540550000</span> <span class="text-slate-500">(Transaction Amount = Rp 50.000)</span><br>
+              <span class="text-amber-400">5802ID</span> <span class="text-slate-500">(Country Code = ID)</span><br>
+              <span class="text-amber-400">6304E65F</span> <span class="text-slate-500">(CRC-16 Checksum = E65F)</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-brand-accent/10 border border-brand-accent/20 space-y-2">
+            <h4 class="text-xs font-bold text-brand-accent flex items-center gap-1.5">
+              <i class="fa-solid fa-calculator"></i>
+              <span>Rumus Algoritma CRC-16/CCITT-FALSE</span>
+            </h4>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Algoritma kalkulasi keamanan QRIS menggunakan bitwise polynomial <code class="font-mono text-brand-accent">0x1021</code> dengan Initial Value <code class="font-mono text-brand-accent">0xFFFF</code>. String dihitung dari karakter pertama (Tag 00) hingga string <code class="font-mono text-brand-accent">6304</code> sebelum nilai 4-digit CRC.
+            </p>
+          </div>
+        </div>
+          <!-- 5. Keamanan, SEO & Dynamic Routing -->
+      <section id="security" x-show="matchesSearch('5. keamanan seo dynamic routing zero-trust rich snippets cloudflare variables secrets clean urls')" class="scroll-mt-24 space-y-3">
+        <div class="flex items-center gap-2.5 pb-2 border-b border-brand-border/40">
+          <div class="w-6 h-6 rounded-md bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-black flex items-center justify-center text-[11px] flex-shrink-0">
+            5
+          </div>
+          <h2 class="text-xs sm:text-base font-extrabold text-slate-100 tracking-tight">Keamanan, SEO & Dynamic Routing (Spesifikasi Mendalam)</h2>
+        </div>
+
+        <div class="space-y-4">
+          <!-- 5.1 Arsitektur Keamanan -->
+          <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl p-2.5 sm:p-6 space-y-3">
+            <div class="flex items-center gap-2 text-brand-accent font-bold text-xs sm:text-sm">
+              <i class="fa-solid fa-shield-halved"></i>
+              <h3>5.1 Arsitektur Keamanan Client-Side & Zero-Trust Privacy</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Platform QRIS Converter menerapkan model keamanan <strong class="text-slate-100">Zero-Backend Storage & Zero-Trust Privacy</strong>. Seluruh proses sensitif penguraian payload QRIS dan kalkulasi CRC-16 dilakukan 100% di browser pengguna tanpa perantara server backend.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+              <div class="bg-brand-bg/70 border border-brand-border/60 p-3 sm:p-4 rounded-lg sm:rounded-xl space-y-1">
+                <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
+                  <i class="fa-solid fa-database text-xs"></i>
+                  <span>Tanpa Database Cloud</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed">Tidak ada database server tempat menyimpan nama merchant, NMID, atau nominal transaksi. Bebas risiko kebocoran data (*zero data leak*).</p>
+              </div>
+
+              <div class="bg-brand-bg/70 border border-brand-border/60 p-3 sm:p-4 rounded-lg sm:rounded-xl space-y-1">
+                <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
+                  <i class="fa-solid fa-memory text-xs"></i>
+                  <span>Pemrosesan Memori Lokal</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed">Dekode piksel QRIS (via <code class="font-mono text-slate-300">jsQR</code>) dan generasi QR Code (via <code class="font-mono text-slate-300">qrcode.js</code>) dieksekusi di memori browser lokal (<code class="font-mono text-slate-300">window.memory</code>).</p>
+              </div>
+
+              <div class="bg-brand-bg/70 border border-brand-border/60 p-3 sm:p-4 rounded-lg sm:rounded-xl space-y-1">
+                <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
+                  <i class="fa-solid fa-hard-drive text-xs"></i>
+                  <span>Dual Storage Isolation</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed">Data sesi diisolasi pada <code class="font-mono text-slate-300">localStorage</code> dan <code class="font-mono text-slate-300">sessionStorage</code> perangkat merchant saja.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5.2 Strategi SEO & Rich Snippets -->
+          <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl p-2.5 sm:p-6 space-y-3">
+            <div class="flex items-center gap-2 text-brand-accent font-bold text-xs sm:text-sm">
+              <i class="fa-solid fa-magnifying-glass-chart"></i>
+              <h3>5.2 Strategi SEO Perusahaan & Schema Rich Snippets</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Website dioptimalkan sepenuhnya untuk indeksasi mesin pencari Google, Bing, dan Yandex menggunakan standar meta tag modern dan <strong class="text-slate-100">Structured Data JSON-LD (Schema.org)</strong>.
+            </p>
+
+            <div class="space-y-2.5 pt-1">
+              <div class="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg/70 border border-brand-border/60 space-y-1">
+                <div class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                  <i class="fa-solid fa-code text-brand-accent"></i>
+                  <span>1. Schema `SoftwareApplication` (Google Rich Snippets)</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed">
+                  Memberi tahu bot Google bahwa web ini adalah <code class="font-mono text-slate-300">BusinessApplication</code> gratis (Price IDR 0.00) dengan Aggregate Rating 4.9, sehingga Google menampilkan rating bintang pada hasil pencarian.
+                </p>
+              </div>
+
+              <div class="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg/70 border border-brand-border/60 space-y-1">
+                <div class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                  <i class="fa-solid fa-list-check text-brand-accent"></i>
+                  <span>2. Schema `FAQPage` (Google Search Accordion)</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed">
+                  Menginjeksi struktur Tanya-Jawab baku mengenai keabsahan QRIS dinamis dan kompatibilitas m-Banking (BCA, Mandiri, BRI, BNI, GoPay, OVO, DANA) agar tampil di SERP Google.
+                </p>
+              </div>
+
+              <div class="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg/70 border border-brand-border/60 space-y-1">
+                <div class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                  <i class="fa-solid fa-share-nodes text-brand-accent"></i>
+                  <span>3. Open Graph & Twitter Cards Protocol</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed">
+                  Meta tag <code class="font-mono text-slate-300">og:title</code>, <code class="font-mono text-slate-300">og:image</code> (1200x630px), dan <code class="font-mono text-slate-300">twitter:card</code> menjamin tampilan pratinjau yang profesional saat link dibagikan di WhatsApp, Telegram, FB, dan Twitter.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5.3 Dynamic Origin & Cloudflare Secrets -->
+          <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl p-2.5 sm:p-6 space-y-3">
+            <div class="flex items-center gap-2 text-brand-accent font-bold text-xs sm:text-sm">
+              <i class="fa-solid fa-sliders"></i>
+              <h3>5.3 Dynamic Origin Auto-Detector & Cloudflare Variables</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Sistem pengenal domain aplikasi bekerja menggunakan skema hierarki prioritas otomatis:
+            </p>
+
+            <div class="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg border border-brand-border/60 font-mono text-[11px] text-slate-300 space-y-2">
+              <div class="text-slate-500">// Skema Hierarki Deteksi Origin Domain</div>
+              <div class="text-brand-accent font-bold">Cloudflare Secrets (SITE_URL) ➔ window.location.origin ➔ Fallback Default</div>
+            </div>
+
+            <div class="space-y-1.5 pt-1">
+              <h4 class="text-xs font-bold text-slate-200">Dukungan Cloudflare Variables & Secrets:</h4>
+              <ul class="text-[11px] text-slate-400 space-y-1 list-disc list-inside">
+                <li><code class="font-mono text-slate-200">SITE_URL</code> atau <code class="font-mono text-slate-200">PUBLIC_SITE_URL</code>: Mengatur nama domain utama kustom.</li>
+                <li><code class="font-mono text-slate-200">GOOGLE_SITE_VERIFICATION</code>: Otomatis menginjeksi meta tag verifikasi Google Search Console.</li>
+                <li><code class="font-mono text-slate-200">BING_SITE_VERIFICATION</code> / <code class="font-mono text-slate-200">MSVALIDATE_01</code>: Otomatis menginjeksi meta tag verifikasi Bing Webmaster Tools.</li>
+                <li><code class="font-mono text-slate-200">YANDEX_SITE_VERIFICATION</code>: Otomatis menginjeksi meta tag verifikasi Yandex Webmaster.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 5.4 Routing Bersih (Clean URLs) -->
+          <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl p-2.5 sm:p-6 space-y-3">
+            <div class="flex items-center gap-2 text-brand-accent font-bold text-xs sm:text-sm">
+              <i class="fa-solid fa-link"></i>
+              <h3>5.4 Routing Bersih (Clean URLs) & Navigation Offset</h3>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Menggunakan <strong class="text-slate-100">HTML5 History API (`history.replaceState`)</strong> untuk secara otomatis menghapus ekstensi <code class="font-mono text-slate-300">.html</code> dan simbol hash <code class="font-mono text-slate-300">#</code> pada address bar peramban, memberikan tampilan alamat web tingkat perusahaan (<code class="font-mono text-brand-accent">/</code>, <code class="font-mono text-brand-accent">/login</code>, <code class="font-mono text-brand-accent">/dashboard</code>, <code class="font-mono text-brand-accent">/docs</code>).
+            </p>
+
+            <div class="p-3 sm:p-4 rounded-lg sm:rounded-xl bg-brand-bg/70 border border-brand-border/60 space-y-2">
+              <span class="text-xs font-bold text-slate-200 block">Dukungan Konfigurasi Hosting Multi-Platform:</span>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[10px] font-mono">
+                <div class="p-2 rounded bg-brand-sidebar border border-brand-border/60 text-slate-300">
+                  <span class="text-brand-accent font-bold">Cloudflare / Netlify:</span><br>
+                  File <code class="text-slate-400">_redirects</code> (200 rewrite)
+                </div>
+                <div class="p-2 rounded bg-brand-sidebar border border-brand-border/60 text-slate-300">
+                  <span class="text-brand-accent font-bold">Vercel Platform:</span><br>
+                  File <code class="text-slate-400">vercel.json</code> (cleanUrls: true)
+                </div>
+                <div class="p-2 rounded bg-brand-sidebar border border-brand-border/60 text-slate-300">
+                  <span class="text-brand-accent font-bold">Apache Web Server:</span><br>
+                  File <code class="text-slate-400">.htaccess</code> (RewriteEngine)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Panduan Deployment -->
+      <section id="deployment" x-show="matchesSearch('6. panduan deployment cloudflare pages wrangler build npm run build')" class="scroll-mt-24 space-y-3">
+        <div class="flex items-center gap-2.5 pb-2 border-b border-brand-border/40">
+          <div class="w-6 h-6 rounded-md bg-brand-accent/10 border border-brand-accent/30 text-brand-accent font-black flex items-center justify-center text-[11px] flex-shrink-0">
+            6
+          </div>
+          <h2 class="text-xs sm:text-base font-extrabold text-slate-100 tracking-tight">Panduan Deployment (Cloudflare Pages)</h2>
+        </div>
+
+        <div class="bg-brand-sidebar/50 sm:bg-brand-sidebar border border-brand-border/40 sm:border-brand-border rounded-xl sm:rounded-2xl p-2.5 sm:p-6 space-y-3">
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Aplikasi ini dirancang untuk di-deploy secara instan ke platform <strong class="text-slate-100">Cloudflare Pages (`*.pages.dev`)</strong>:
+          </p>
+
+          <div class="bg-brand-bg border border-brand-border rounded-xl p-4 space-y-2 font-mono text-[11px] text-slate-300">
+            <div class="text-slate-500"># 1. Jalankan Kompilasi Production Bundle</div>
+            <div>npm run build</div>
+            <br>
+            <div class="text-slate-500"># 2. Deploy ke Cloudflare Pages</div>
+            <div>npx wrangler pages deploy ./</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ============================== FOOTER ============================== -->
+  <footer class="w-full border-t border-brand-border/60 bg-brand-sidebar/40 py-8 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+      
+      <!-- Brand & Copyright -->
+      <div class="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-md bg-brand-accent flex items-center justify-center text-black font-black text-[10px] shadow-sm">
+            Qc
+          </div>
+          <span class="font-extrabold text-slate-200 tracking-tight text-xs">QRIS Converter</span>
+        </div>
+        <span class="hidden sm:inline text-slate-600">•</span>
+        <span class="text-[11px] text-slate-400">&copy; 2026 QRIS Converter. Diproduksi sesuai standar EMVCo &amp; Bank Indonesia (GPN).</span>
+      </div>
+
+      <!-- Links & Navigation -->
+      <div class="flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-400 font-semibold">
+        <a href="/" onclick="smartNavHome(event)" class="hover:text-brand-accent transition-colors flex items-center gap-1">
+          <i class="fa-solid fa-house text-[10px]"></i> Beranda
+        </a>
+        <a href="/login" onclick="smartNavLogin(event)" class="hover:text-brand-accent transition-colors flex items-center gap-1">
+          <i class="fa-solid fa-right-to-bracket text-[10px]"></i> Buka App
+        </a>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    function smartNavHome(e) {
+      if (e) e.preventDefault();
+      const dest = window.location.protocol === 'file:' ? 'index.html' : '/';
+      window.location.href = dest;
+    }
+    function smartNavLogin(e) {
+      if (e) e.preventDefault();
+      const dest = window.location.protocol === 'file:' ? 'login.html' : '/login';
+      window.location.href = dest;
+    }
+  </script>
+
+</body>
+</html>

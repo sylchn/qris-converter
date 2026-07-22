@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Masuk Merchant - QRIS Converter</title>
+  <meta name="title" content="Masuk Merchant - QRIS Converter">
+  <meta name="description" content="Unggah gambar atau salin payload QRIS Statis merchant Anda untuk mengakses Dashboard Pengelola QRIS Dinamis Nominal Otomatis.">
+  <meta name="keywords" content="masuk qris merchant, login qris converter, unggah qris statis">
+  <meta name="author" content="QRIS Converter Team">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0f121e">
+  
+  <!-- Dynamic Origin & Search Console Verification (Google, Bing, Yandex) -->
+  <script>
+    (function() {
+      const cfEnvUrl = (typeof window !== 'undefined' && window.CLOUDFLARE_SITE_URL) ? window.CLOUDFLARE_SITE_URL : '';
+      const siteOrigin = cfEnvUrl || ((window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://qris-dynamic-converter.pages.dev');
+      const cleanPath = window.location.pathname.replace(/\.html$/, '');
+      const fullUrl = siteOrigin + cleanPath;
+      
+      function addMeta(attr, valKey, valVal) {
+        const el = document.createElement('meta');
+        el.setAttribute(attr, valKey);
+        el.setAttribute('content', valVal);
+        document.head.appendChild(el);
+      }
+      function addLink(rel, href) {
+        const el = document.createElement('link');
+        el.setAttribute('rel', rel);
+        el.setAttribute('href', href);
+        document.head.appendChild(el);
+      }
+
+      addLink('canonical', fullUrl);
+      addMeta('property', 'og:url', fullUrl);
+
+      const gVerify = (typeof window !== 'undefined' && window.GOOGLE_SITE_VERIFICATION) ? window.GOOGLE_SITE_VERIFICATION : '';
+      const bVerify = (typeof window !== 'undefined' && (window.BING_SITE_VERIFICATION || window.MSVALIDATE_01)) ? (window.BING_SITE_VERIFICATION || window.MSVALIDATE_01) : '';
+      const yVerify = (typeof window !== 'undefined' && window.YANDEX_SITE_VERIFICATION) ? window.YANDEX_SITE_VERIFICATION : '';
+
+      if (gVerify) addMeta('name', 'google-site-verification', gVerify);
+      if (bVerify) addMeta('name', 'msvalidate.01', bVerify);
+      if (yVerify) addMeta('name', 'yandex-verification', yVerify);
+    })();
+  </script>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Masuk Merchant - QRIS Converter">
+  <meta property="og:description" content="Akses Dashboard QRIS Dinamis merchant Anda secara gratis dan aman.">
+  <meta property="og:site_name" content="QRIS Converter">
+  <meta property="og:locale" content="id_ID">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lib/font-awesome/css/all.min.css">
+
+  <script src="lib/jsQR.min.js"></script>
+  <script src="lib/qrcode.min.js"></script>
+  <script src="login.bundle.js"></script>
+</head>
+<body class="bg-brand-bg text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans relative overflow-hidden" x-data="loginApp">
+
+  <!-- Background glow -->
+  <div class="fixed inset-0 flex items-center justify-center pointer-events-none">
+    <div class="w-[600px] h-[400px] bg-brand-accent/4 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Login Main Card - Flatter, Sleek Design -->
+  <div class="bg-brand-card border border-brand-border rounded-xl p-8 max-w-md w-full shadow-lg relative z-10 space-y-6" x-show="!loading">
+    
+    <!-- Logo & Header -->
+    <div class="text-center space-y-3">
+      <a href="/" onclick="smartNavHome(event)" class="w-10 h-10 rounded-lg bg-brand-accent flex items-center justify-center shadow-md mx-auto transition-transform hover:scale-105 block">
+        <span class="text-black font-extrabold text-base tracking-tighter">Qc</span>
+      </a>
+      <div class="space-y-1">
+        <h1 class="text-lg font-extrabold text-slate-100">Masuk Merchant</h1>
+        <p class="text-xs text-brand-text-muted">Unggah QRIS Statis toko Anda untuk mengakses dashboard merchant Anda.</p>
+      </div>
+    </div>
+
+    <!-- Login Tabs -->
+    <div class="bg-brand-sidebar border border-brand-border p-1 rounded-lg flex gap-1">
+      <button @click="tab = 'upload'" :class="tab === 'upload' ? 'bg-[#121824] text-brand-accent font-bold border-brand-border' : 'text-slate-500 hover:text-slate-300'" class="flex-1 py-2 text-xs rounded border border-transparent transition-colors duration-200 ease-in-out">
+        <i class="fa-solid fa-arrow-up-from-bracket mr-1.5"></i>
+        Unggah File
+      </button>
+      <button @click="tab = 'text'" :class="tab === 'text' ? 'bg-[#121824] text-brand-accent font-bold border-brand-border' : 'text-slate-500 hover:text-slate-300'" class="flex-1 py-2 text-xs rounded border border-transparent transition-colors duration-200 ease-in-out">
+        <i class="fa-solid fa-code mr-1.5"></i>
+        Tempel Teks
+      </button>
+    </div>
+
+    <!-- Tab 1: Upload File -->
+    <div x-show="tab === 'upload'" x-transition:enter="transition-opacity ease-in-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="space-y-4">
+      
+      <!-- Drag & Drop Zone -->
+      <div 
+        @dragover.prevent="isDragging = true"
+        @dragleave.prevent="isDragging = false"
+        @drop.prevent="handleDrop($event)"
+        :class="isDragging ? 'border-brand-accent bg-brand-accent/5' : 'border-brand-border hover:border-brand-accent/40 bg-brand-sidebar/50 hover:bg-brand-sidebar'"
+        class="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors duration-200 ease-in-out flex flex-col items-center justify-center gap-4 relative group min-h-[160px]"
+      >
+        <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-30" @change="handleFileSelect($event)">
+
+        <div x-show="!fileName" class="flex flex-col items-center gap-3">
+          <div class="w-12 h-12 rounded-lg bg-brand-hover text-brand-accent border border-brand-border flex items-center justify-center transition-transform duration-200 ease-in-out group-hover:scale-105">
+            <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+          </div>
+          <div class="space-y-1">
+            <span class="text-xs font-bold text-slate-200 block">Pilih File QRIS Merchant</span>
+            <span class="text-[10px] text-slate-500 block leading-relaxed">Format JPG, PNG, atau GIF. Klik untuk memilih.</span>
+          </div>
+        </div>
+
+        <!-- File Name Badge -->
+        <div x-show="fileName" class="absolute inset-0 bg-[#0b0e14]/95 rounded-xl p-4 flex flex-col items-center justify-center gap-3 border border-brand-border z-20">
+          <div class="flex items-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded text-xs font-bold">
+            <i class="fa-solid fa-file-circle-check"></i>
+            <span x-text="fileName"></span>
+          </div>
+          <button @click.stop="clearFile" class="text-[10px] text-rose-500 hover:underline">Hapus file</button>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Tab 2: Tempel Teks QRIS -->
+    <div x-show="tab === 'text'" x-transition:enter="transition-opacity ease-in-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="space-y-3">
+      <div class="space-y-1.5">
+        <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Payload Teks QRIS Statis</label>
+        <textarea 
+          x-model="textPayload"
+          @input="handleTextInput"
+          placeholder="Tempel string QRIS statis di sini (contoh: 000201010211...)" 
+          rows="4" 
+          class="w-full bg-brand-sidebar border border-brand-border rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-accent transition-all resize-none leading-relaxed"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Error Message Banner -->
+    <div x-show="errorMessage" x-transition class="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-[10px] font-medium text-rose-400 flex items-start gap-2">
+      <i class="fa-solid fa-circle-exclamation text-sm flex-shrink-0 mt-0.5"></i>
+      <span x-text="errorMessage"></span>
+    </div>
+
+    <!-- Validated Merchant Banner -->
+    <div x-show="staticQRLocal" x-transition class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 flex items-center gap-2">
+      <i class="fa-solid fa-circle-check text-xs"></i>
+      <span>Terverifikasi: <span class="text-emerald-300" x-text="staticQRLocal?.summary?.merchantName || 'Merchant'"></span> (<span x-text="staticQRLocal?.summary?.merchantCity || ''"></span>)</span>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="space-y-2">
+      <button 
+        @click="processLogin"
+        :disabled="!staticQRLocal"
+        class="w-full bg-brand-accent hover:bg-brand-accent-hover text-black font-extrabold text-[11px] uppercase tracking-wider py-3.5 px-4 rounded-lg transition-colors duration-200 ease-in-out disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-brand-accent/5"
+      >
+        <i class="fa-solid fa-right-to-bracket text-xs"></i>
+        <span>Masuk ke Dashboard</span>
+      </button>
+
+      <a href="/" onclick="smartNavHome(event)" class="w-full bg-brand-sidebar hover:bg-brand-hover text-slate-400 hover:text-slate-200 border border-brand-border font-bold text-xs py-2.5 px-4 rounded-lg transition-colors duration-200 ease-in-out flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-house text-xs"></i>
+        <span>Kembali ke Beranda</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Scanning / Loading Screen Overlay -->
+  <div class="flex flex-col items-center justify-center gap-5 p-8 max-w-sm w-full text-center relative z-10" x-show="loading">
+    <div class="relative">
+      <div class="w-16 h-16 rounded-full border-4 border-brand-accent/10 border-t-brand-accent animate-spin"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <i class="fa-solid fa-shield-halved text-brand-accent text-xl"></i>
+      </div>
+    </div>
+    <div class="space-y-1">
+      <h3 class="text-xs font-bold text-slate-200" x-text="loadingText">Menganalisis Payload QRIS...</h3>
+      <p class="text-[10px] text-slate-500 max-w-xs leading-relaxed">Sistem sedang membaca format data EMVCo merchant Anda secara lokal.</p>
+  </div>
+
+  <script>
+    function smartNavHome(e) {
+      if (e) e.preventDefault();
+      const dest = window.location.protocol === 'file:' ? 'index.html' : '/';
+      window.location.href = dest;
+    }
+  </script>
+</body>
+</html>
