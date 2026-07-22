@@ -494,12 +494,30 @@
     function smartNav(e) {
       if (e) e.preventDefault();
       const session = localStorage.getItem('qrisStaticData') || sessionStorage.getItem('qrisStaticData');
-      const dest = session ? 'dashboard' : 'login';
-      if (window.location.protocol === 'file:') {
-        window.location.href = dest + '.html';
-      } else {
-        window.location.href = '/' + dest;
+      let dest = 'login';
+      if (session) {
+        try {
+          const data = JSON.parse(session);
+          if (data && data.payload && typeof data.payload === 'string' && data.payload.length > 20) {
+            dest = 'dashboard';
+          } else {
+            localStorage.removeItem('qrisStaticData');
+            sessionStorage.removeItem('qrisStaticData');
+          }
+        } catch(err) {
+          localStorage.removeItem('qrisStaticData');
+          sessionStorage.removeItem('qrisStaticData');
+        }
       }
+
+      const isFile = window.location.protocol === 'file:';
+      const target = isFile ? dest + '.html' : '/' + dest;
+      const currentPath = window.location.pathname.replace(/\/$/, '').replace(/\.html$/, '');
+
+      if (!isFile && (currentPath === '/' + dest || currentPath.endsWith(dest))) {
+        return;
+      }
+      window.location.href = target;
     }
 
     // Automatically strip .html and # hash from URL bar

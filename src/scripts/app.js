@@ -198,8 +198,11 @@ Alpine.data('qrisApp', () => ({
       localStorage.removeItem('qrisStaticData');
       sessionStorage.removeItem('qrisStaticData');
     } catch(e) {}
-    const dest = window.location.protocol === 'file:' ? 'login.html' : '/login';
-    window.location.href = dest;
+    const currentPath = window.location.pathname.replace(/\/$/, '').replace(/\.html$/, '');
+    if (!currentPath.endsWith('login')) {
+      const dest = window.location.protocol === 'file:' ? 'login.html' : '/login';
+      window.location.href = dest;
+    }
   },
 
   setStaticData(payload, parsedObj = null) {

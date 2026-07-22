@@ -205,9 +205,9 @@
       <!-- Nav Links (Desktop) -->
       <div class="hidden lg:flex items-center gap-8 text-xs font-semibold text-slate-400">
         <a href="/" onclick="smartNavHome(event)" class="hover:text-slate-100 transition-colors">Beranda</a>
-        <a href="/#fitur" class="hover:text-slate-100 transition-colors">Fitur</a>
-        <a href="/#panduan" class="hover:text-slate-100 transition-colors">Cara Kerja</a>
-        <a href="/#keamanan" class="hover:text-slate-100 transition-colors">Keamanan</a>
+        <a href="/#fitur" onclick="smartNavSection(event, 'fitur')" class="hover:text-slate-100 transition-colors">Fitur</a>
+        <a href="/#panduan" onclick="smartNavSection(event, 'panduan')" class="hover:text-slate-100 transition-colors">Cara Kerja</a>
+        <a href="/#keamanan" onclick="smartNavSection(event, 'keamanan')" class="hover:text-slate-100 transition-colors">Keamanan</a>
         <a href="/docs" class="text-brand-accent font-bold">Dokumentasi</a>
       </div>
 
@@ -858,6 +858,12 @@
       if (e) e.preventDefault();
       const dest = window.location.protocol === 'file:' ? 'login.html' : '/login';
       window.location.href = dest;
+    }
+    function smartNavSection(e, id) {
+      if (e) e.preventDefault();
+      const isFile = window.location.protocol === 'file:';
+      const target = isFile ? `index.html#${id}` : `/#${id}`;
+      window.location.href = target;
     }
   </script>
 

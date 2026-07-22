@@ -39,13 +39,27 @@ Alpine.data('loginApp', () => ({
     if (activeSession) {
       try {
         const parsedData = JSON.parse(activeSession);
-        if (parsedData && parsedData.payload) {
-          // Pengguna sudah login & belum logout -> langsung arahkan ke dashboard
-          const dest = window.location.protocol === 'file:' ? 'dashboard.html' : '/dashboard';
-          window.location.href = dest;
-          return;
+        if (parsedData && parsedData.payload && typeof parsedData.payload === 'string' && parsedData.payload.length > 20) {
+          const check = parseQRIS(parsedData.payload);
+          if (check && check.isValid) {
+            const currentPath = window.location.pathname.replace(/\/$/, '').replace(/\.html$/, '');
+            if (!currentPath.endsWith('dashboard')) {
+              const dest = window.location.protocol === 'file:' ? 'dashboard.html' : '/dashboard';
+              window.location.href = dest;
+              return;
+            }
+          } else {
+            localStorage.removeItem('qrisStaticData');
+            sessionStorage.removeItem('qrisStaticData');
+          }
+        } else {
+          localStorage.removeItem('qrisStaticData');
+          sessionStorage.removeItem('qrisStaticData');
         }
-      } catch (e) {}
+      } catch (e) {
+        localStorage.removeItem('qrisStaticData');
+        sessionStorage.removeItem('qrisStaticData');
+      }
     }
   },
 
